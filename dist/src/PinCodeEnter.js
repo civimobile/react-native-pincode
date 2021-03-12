@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const delay_1 = require("./delay");
 const PinCode_1 = require("./PinCode");
 const utils_1 = require("./utils");
-const async_storage_1 = require("@react-native-community/async-storage");
+const async_storage_1 = require("@react-native-async-storage/async-storage");
 const React = require("react");
 const react_native_1 = require("react-native");
 const Keychain = require("react-native-keychain");
@@ -49,7 +49,7 @@ class PinCodeEnter extends React.PureComponent {
                         this.props.changeInternalStatus(utils_1.PinResultStatus.failure);
                     }
                     if (this.props.onFail) {
-                        await delay_1.default(this.props.animationErrorDuration / 2 || 1500);
+                        await delay_1.default((this.props.animationErrorDuration || 3000) / 2);
                         this.props.onFail(pinAttempts);
                     }
                 }
@@ -62,7 +62,7 @@ class PinCodeEnter extends React.PureComponent {
     async componentWillMount() {
         if (!this.props.storedPin) {
             const result = await Keychain.getInternetCredentials(this.props.pinCodeKeychainName);
-            this.keyChainResult = result.password || undefined;
+            this.keyChainResult = result !== false ? (result.password || undefined) : undefined;
         }
     }
     componentDidMount() {

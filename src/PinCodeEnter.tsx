@@ -2,7 +2,7 @@ import delay from './delay'
 import PinCode, { PinStatus } from './PinCode'
 import { PinResultStatus } from './utils'
 
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as React from 'react'
 import {
   StyleProp,
@@ -112,7 +112,7 @@ class PinCodeEnter extends React.PureComponent<IProps, IState> {
       const result = await Keychain.getInternetCredentials(
         this.props.pinCodeKeychainName
       )
-      this.keyChainResult = result.password || undefined
+      this.keyChainResult = result !== false ? (result.password || undefined) : undefined
     }
   }
 
@@ -189,7 +189,7 @@ class PinCodeEnter extends React.PureComponent<IProps, IState> {
           this.props.changeInternalStatus(PinResultStatus.failure)
         }
         if (this.props.onFail) {
-          await delay(this.props.animationErrorDuration / 2 || 1500)
+          await delay((this.props.animationErrorDuration || 3000) / 2)
           this.props.onFail(pinAttempts)
         }
       }
